@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ache suas fotos</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <link
+    id="fontTitle"
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <link
+    id="fontBody"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="./css/styles.css" />
+</head>
+
+<body>
+  <div class="container">
+    <div class="card">
+      <div class="header">
+        <div class="brand">
+          <h1 id="coupleNames">Karen & Leo</h1>
+          <p id="dateText">12/07/2025</p>
+        </div>
+
+        <div class="row">
+          <a class="btn secondary" href="./gallery.html">Voltar</a>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="empty" id="lockedBox" style="display:none;">
+          Você precisa inserir o PIN para acessar. Volte para a página inicial.
+        </div>
+
+        <div id="content">
+          <h2 style="margin-top:0;">Ache suas fotos com uma selfie</h2>
+          <p class="help" style="margin-top:6px;">
+            Você pode tirar uma selfie pela câmera ou enviar uma foto do rolo de câmera. A imagem é usada apenas para a busca e não é salva.
+          </p>
+
+          <div class="row" style="margin-top:14px;">
+            <button id="openCameraBtn" class="btn" type="button">Abrir câmera</button>
+
+            <label class="btn secondary" style="cursor:pointer;">
+              Enviar foto
+              <input id="fileInput" type="file" accept="image/*" style="display:none;">
+            </label>
+          </div>
+
+          <div style="margin-top:14px;">
+            <video id="video" playsinline autoplay style="width:100%; border-radius:14px; display:none;"></video>
+            <canvas id="canvas" style="display:none;"></canvas>
+
+            <div class="row" style="margin-top:10px;">
+              <button id="takePhotoBtn" class="btn" type="button" style="display:none;">Tirar selfie</button>
+              <button id="cancelCameraBtn" class="btn secondary" type="button" style="display:none;">Cancelar</button>
+            </div>
+          </div>
+
+          <div class="empty" id="statusBox" style="margin-top:16px;">
+            Pronto para iniciar a busca.
+          </div>
+
+          <h2 style="margin-top:18px;">Resultados</h2>
+          <div id="results"></div>
+
+          <!-- Modal reaproveitado -->
+          <div id="photoModal" class="modal hidden" aria-hidden="true">
+            <div class="modal-backdrop" id="modalBackdrop"></div>
+
+            <div class="modal-content card">
+              <button class="modal-close" id="modalClose" aria-label="Fechar">✕</button>
+
+              <button class="nav nav-left" id="navLeft" aria-label="Anterior">‹</button>
+              <button class="nav nav-right" id="navRight" aria-label="Próxima">›</button>
+
+              <div class="modal-body">
+                <div id="imgLoader" class="img-loader">Carregando…</div>
+                <img id="modalImage" alt="Foto do casamento" />
+              </div>
+
+              <div class="modal-footer">
+                <div class="modal-meta">
+                  <span id="modalTitle" class="modal-title">Resultados</span>
+                  <span id="modalCounter" class="modal-counter"></span>
+                </div>
+
+                <div class="modal-actions row">
+                  <button id="copyBtn" class="btn secondary" type="button">Copiar link</button>
+                  <a id="downloadBtn" class="btn" href="#" download>Download</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="./js/find.js"></script>
+</body>
+</html>

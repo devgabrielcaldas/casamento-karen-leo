@@ -306,4 +306,8 @@ function bindModalControls() {
   } catch (err) {
     console.error(err);
   }
+
+  document.getElementById("faceFindBtn")?.addEventListener("click", () => {
+  window.location.href = "./find.html";
+});
 })();
