@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Galeria do Casamento</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link id="fontTitle" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+  <link id="fontBody" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="./css/styles.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <div class="header">
+        <div class="brand">
+          <h1 id="coupleNames">Karen & Leo</h1>
+          <p id="dateText">12/07/2025</p>
+        </div>
+        <div class="badge">Acesso por PIN</div>
+      </div>
+
+      <div class="grid">
+        <div class="card" style="padding:20px;">
+          <h2 style="margin:0 0 10px; font-size:18px;">Digite o PIN para acessar</h2>
+          <p class="help" style="margin:0 0 14px;">O PIN foi compartilhado pelo casal. Ele serve para afastar curiosos e facilitar o acesso dos convidados.</p>
+
+          <div class="row">
+            <input id="pinInput" class="input" inputmode="numeric" maxlength="6" placeholder="Ex: 1111" />
+            <button id="enterBtn" class="btn">Entrar</button>
+          </div>
+
+          <p id="pinError" class="help" style="margin:10px 0 0; color:#fca5a5; display:none;">PIN incorreto. Tente novamente.</p>
+
+          <div style="margin-top:16px;" class="row">
+            <a class="btn secondary" href="./gallery.html">Já tenho acesso (pular)</a>
+          </div>
+
+          <p class="help" style="margin:14px 0 0;">
+            * “pular” disponível apenas durante desenvolvimento. Depois será removido.
+          </p>
+        </div>
+
+        <div class="card" style="padding:20px;">
+          <h2 style="margin:0 0 10px; font-size:18px;">Como usar</h2>
+          <ul class="help" style="margin:0; padding-left:18px;">
+            <li>Abra a galeria e navegue pelos momentos.</li>
+            <li>Toque em uma foto para ver em tela cheia.</li>
+            <li>Baixe em alta qualidade para postar.</li>
+          </ul>
+          <div style="margin-top:16px;" class="empty">
+            Depois vamos adicionar aqui um elemento do convite (ex: a árvore) para deixar único.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="./js/app.js"></script>
+</body>
+</html>

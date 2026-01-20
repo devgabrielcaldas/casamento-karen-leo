@@ -1,0 +1,23 @@
+{
+  "sections": [
+    {
+      "id": "pre-wedding",
+      "title": "Pré-wedding",
+      "items": [
+        { "id": "pw1", "thumb": "https://placehold.co/420x420", "full": "https://placehold.co/1600x1000", "download": "https://placehold.co/2400x1600" },
+        { "id": "pw2", "thumb": "https://placehold.co/421x421", "full": "https://placehold.co/1600x1001", "download": "https://placehold.co/2400x1601" },
+        { "id": "pw3", "thumb": "https://placehold.co/422x422", "full": "https://placehold.co/1600x1002", "download": "https://placehold.co/2400x1602" }
+      ]
+    },
+    {
+      "id": "ceremony",
+      "title": "Cerimônia",
+      "items": [
+        { "id": "c1", "thumb": "https://placehold.co/430x430", "full": "https://placehold.co/1600x1100", "download": "https://placehold.co/2400x1700" },
+        { "id": "c2", "thumb": "https://placehold.co/431x431", "full": "https://placehold.co/1600x1101", "download": "https://placehold.co/2400x1701" },
+        { "id": "c3", "thumb": "https://placehold.co/432x432", "full": "https://placehold.co/1600x1102", "download": "https://placehold.co/2400x1702" }
+      ]
+    }
+  ]
+}
+

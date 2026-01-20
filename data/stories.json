@@ -1,0 +1,18 @@
+{
+  "stories": [
+    {
+      "id": "chegada",
+      "title": "Chegada",
+      "type": "image",
+      "thumbnail": "https://placehold.co/120x120",
+      "src": "https://placehold.co/1080x1920"
+    },
+    {
+      "id": "festa",
+      "title": "Festa",
+      "type": "video",
+      "thumbnail": "https://placehold.co/120x120",
+      "src": "https://www.w3schools.com/html/mov_bbb.mp4"
+    }
+  ]
+}

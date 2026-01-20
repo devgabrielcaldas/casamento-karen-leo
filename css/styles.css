@@ -1,0 +1,469 @@
+/* =========================
+   THEME / TOKENS
+========================= */
+:root {
+  --primary: #E89AA4;
+  --secondary: #1F2A44;
+  --bg: #0B0F1A;
+  --surface: #111827;
+  --text: #F8FAFC;
+  --muted: #94A3B8;
+
+  --radius: 18px;
+  --shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+  --max: 1100px;
+}
+
+/* =========================
+   BASE / RESET
+========================= */
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  -webkit-tap-highlight-color: transparent;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+/* Acessibilidade (teclado) */
+:focus-visible {
+  outline: 2px solid rgba(232, 154, 164, 0.65);
+  outline-offset: 3px;
+  border-radius: 12px;
+}
+
+/* =========================
+   LAYOUT
+========================= */
+.container {
+  width: 100%;
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 24px;
+}
+
+@media (max-width: 520px) {
+  .container {
+    padding: 16px;
+  }
+}
+
+/* =========================
+   CARD / HEADER / BRAND
+========================= */
+.card {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.header {
+  padding: 28px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.brand {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.brand h1 {
+  margin: 0;
+  font-family: "Playfair Display", serif;
+  font-size: clamp(26px, 4vw, 42px);
+  letter-spacing: 0.2px;
+}
+
+.brand p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.badge {
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.05);
+  font-size: 14px;
+  color: var(--muted);
+}
+
+/* =========================
+   BUTTONS / INPUTS / TEXT
+========================= */
+.btn {
+  appearance: none;
+  border: 0;
+  cursor: pointer;
+  padding: 12px 16px;
+  border-radius: 14px;
+  background: var(--primary);
+  color: #111;
+  font-weight: 700;
+  transition: transform 0.12s ease, filter 0.12s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+}
+
+.btn.secondary {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+}
+
+.input {
+  width: 100%;
+  padding: 14px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(0, 0, 0, 0.25);
+  color: var(--text);
+  font-size: 16px;
+  outline: none;
+}
+
+.input:focus {
+  border-color: rgba(232, 154, 164, 0.65);
+}
+
+.help {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+/* Linha flex genérica (header/botões etc.) */
+.row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* =========================
+   GRID (HOME)
+========================= */
+.grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 18px;
+  padding: 24px;
+}
+
+@media (max-width: 860px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================
+   SECTIONS / EMPTY BOX
+========================= */
+.section {
+  padding: 18px 24px 24px;
+}
+
+.section h2 {
+  margin: 0 0 10px;
+  font-size: 18px;
+  color: var(--text);
+}
+
+.empty {
+  padding: 18px;
+  border: 1px dashed rgba(255, 255, 255, 0.18);
+  border-radius: 14px;
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+/* =========================
+   STORIES (TOP BUBBLES)
+========================= */
+.stories {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  padding: 10px 0 18px;
+  scroll-behavior: smooth;
+}
+
+.story {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-width: 72px;
+  cursor: pointer;
+}
+
+.story img {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid var(--primary);
+}
+
+.story span {
+  font-size: 12px;
+  color: var(--muted);
+  text-align: center;
+}
+
+/* =========================
+   NETFLIX CAROUSELS
+========================= */
+.section-row {
+  margin: 18px 0 26px;
+}
+
+.section-row h3 {
+  margin: 0 0 10px;
+  font-size: 16px;
+  color: var(--text);
+}
+
+.row-wrap {
+  position: relative;
+}
+
+/* carrossel (separado do .row flex!) */
+.carousel-row {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 6px 2px 12px;
+}
+
+/* Scrollbar do carrossel */
+.carousel-row::-webkit-scrollbar {
+  height: 10px;
+}
+
+.carousel-row::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+}
+
+/* Thumb */
+.thumb {
+  flex: 0 0 auto;
+  width: 160px;
+  height: 160px;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.04);
+  cursor: pointer;
+  transition: transform 0.15s ease, filter 0.15s ease;
+}
+
+.thumb:hover {
+  transform: translateY(-2px) scale(1.02);
+  filter: brightness(1.05);
+}
+
+.thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Setas do carrossel */
+.row-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(0, 0, 0, 0.35);
+  color: var(--text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+}
+
+.row-arrow:hover {
+  filter: brightness(1.08);
+}
+
+.row-arrow.left {
+  left: -10px;
+}
+
+.row-arrow.right {
+  right: -10px;
+}
+
+@media (max-width: 520px) {
+  .thumb {
+    width: 124px;
+    height: 124px;
+  }
+
+  .row-arrow {
+    display: none; /* no mobile: arrasta com o dedo */
+  }
+}
+
+/* =========================
+   MODAL (FULLSCREEN)
+========================= */
+.modal.hidden {
+  display: none;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  overscroll-behavior: contain; /* evita scroll por trás no mobile */
+}
+
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.72);
+}
+
+.modal-content {
+  position: relative;
+  width: min(980px, calc(100vw - 24px));
+  height: min(78vh, 680px);
+  margin: 10vh auto 0;
+  overflow: hidden;
+}
+
+@media (max-width: 520px) {
+  .modal-content {
+    width: calc(100vw - 16px);
+    height: 82vh;
+    margin-top: 7vh;
+  }
+}
+
+.modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(0, 0, 0, 0.25);
+  color: var(--text);
+  cursor: pointer;
+  z-index: 10;
+}
+
+/* área de imagem */
+.modal-body {
+  position: relative;
+  height: calc(100% - 76px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.modal-body img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* footer */
+.modal-footer {
+  height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.modal-title {
+  font-weight: 700;
+}
+
+.modal-counter {
+  color: var(--muted);
+  font-size: 13px;
+  margin-left: 10px;
+}
+
+/* setas dentro do modal */
+.nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(0, 0, 0, 0.35);
+  color: var(--text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  z-index: 10;
+}
+
+.nav-left {
+  left: 12px;
+}
+
+.nav-right {
+  right: 12px;
+}
+
+.nav:hover {
+  filter: brightness(1.08);
+}
+
+/* loader */
+.img-loader {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  font-size: 14px;
+  background: rgba(0, 0, 0, 0.18);
+}

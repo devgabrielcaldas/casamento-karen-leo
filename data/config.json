@@ -1,0 +1,20 @@
+{
+  "couple": {
+    "names": "Karen & Leo",
+    "dateText": "12/07/2025",
+    "pin": "1207"
+  },
+  "theme": {
+    "primary": "#E89AA4",
+    "secondary": "#1F2A44",
+    "background": "#0B0F1A",
+    "surface": "#111827",
+    "text": "#F8FAFC",
+    "muted": "#94A3B8",
+    "fontTitle": "Playfair Display",
+    "fontBody": "Inter"
+  },
+  "download": {
+    "zipUrl": ""
+  }
+}
