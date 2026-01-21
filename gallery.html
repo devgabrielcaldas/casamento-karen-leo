@@ -5,18 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Galeria</title>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    id="fontTitle"
-    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap"
-    rel="stylesheet"
-  />
-  <link
-    id="fontBody"
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap"
-    rel="stylesheet"
-  />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+  <link id="fontTitle" rel="stylesheet" />
+  <link id="fontBody" rel="stylesheet" />
+  <link id="fontDate" rel="stylesheet" />
+  
 
   <link rel="stylesheet" href="./css/styles.css" />
 </head>
@@ -24,16 +19,16 @@
 <body>
   <div class="container">
     <div class="card">
-      <div class="header">
-        <div class="brand">
-          <h1 id="coupleNames">Karen & Leo</h1>
+
+      <div class="header header--centered">
+        <img class="brand-logo" src="./assets/branding/logo.png" alt="Monograma" />
+
+        <div class="brand brand--center">
+          <h1 id="coupleNames">Karen & Leonardo</h1>
           <p id="dateText">12/07/2025</p>
         </div>
 
-        <div class="row">
-          <a class="btn secondary" href="./index.html">Voltar</a>
-          <a id="zipBtn" class="btn" href="#" style="display:none;">Baixar álbum (ZIP)</a>
-        </div>
+        <a class="header-action" href="./index.html">Voltar</a>
       </div>
 
       <div class="section">
@@ -43,12 +38,13 @@
 
         <div id="content">
           <div id="stories" class="stories"></div>
+
           <div class="face-find">
             <button id="faceFindBtn" class="btn face-find-btn" type="button">
-                Ache suas fotos com uma selfie
+              Ache suas fotos com uma selfie
             </button>
             <p class="help face-find-help">
-                Tire uma selfie para encontrar fotos em que você aparece. A imagem é usada apenas para a busca e não é salva.
+              Tire uma selfie para encontrar fotos em que você aparece. A imagem é usada apenas para a busca e não é salva.
             </p>
           </div>
 
@@ -56,6 +52,7 @@
           <div id="sections"></div>
         </div>
       </div>
+
     </div>
   </div>
 
@@ -90,4 +87,5 @@
 
   <script src="./js/gallery.js"></script>
 </body>
+
 </html>

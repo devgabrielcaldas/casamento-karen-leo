@@ -1,18 +1,22 @@
 {
   "couple": {
-    "names": "Karen & Leo",
+    "names": "Karen & Leonardo",
     "dateText": "12/07/2025",
     "pin": "1207"
   },
   "theme": {
-    "primary": "#E89AA4",
-    "secondary": "#1F2A44",
-    "background": "#0B0F1A",
-    "surface": "#111827",
-    "text": "#F8FAFC",
-    "muted": "#94A3B8",
-    "fontTitle": "Playfair Display",
-    "fontBody": "Inter"
+    "primary": "#993715",
+    "secondary": "#71290F",
+    "background": "#FAF7F4",
+    "surface": "#FFFFFF",
+    "text": "#2B2B2B",
+    "muted": "#6B6B6B",
+    "titleColor": "#71290F",
+    "dateColor": "#993715",
+    "fontTitle": "The Seasons",
+    "fontBody": "Inter",
+    "fontDate": "Great Vibes",
+    "fontScript": "Eyesome Script"
   },
   "download": {
     "zipUrl": ""

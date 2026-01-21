@@ -1,6 +1,8 @@
+// gallery.js
+
 // ---------- Helpers ----------
 async function loadJson(path) {
-  const res = await fetch(path);
+  const res = await fetch(path, { cache: "no-store" });
   if (!res.ok) throw new Error(`Erro ao carregar ${path}: ${res.status}`);
   return res.json();
 }
@@ -10,22 +12,91 @@ async function loadStories() { return loadJson("./data/stories.json"); }
 async function loadGallery() { return loadJson("./data/gallery.json"); }
 
 // ---------- Theme/Header ----------
+function normalizeFonts(t) {
+  const titleRaw = String(t.fontTitle || "");
+  const bodyRaw = String(t.fontBody || "");
+  const dateRaw = String(t.fontDate || t.fontScript || "");
+
+  const title = titleRaw.toLowerCase();
+  const date = dateRaw.toLowerCase();
+
+  const resolved = {
+    fontTitle: titleRaw || "Playfair Display",
+    fontBody: bodyRaw || "Inter",
+    fontDate: dateRaw || "Great Vibes",
+  };
+
+  if (title.includes("the seasons")) resolved.fontTitle = "Playfair Display";
+  if (date.includes("eyesome")) resolved.fontDate = "Great Vibes";
+
+  return resolved;
+}
+
+function toGoogleFamily(family) {
+  return String(family).trim().replace(/\s+/g, "+");
+}
+
+function googleFontsHrefWeights(family, weights = "300;400;600;700") {
+  const name = toGoogleFamily(family);
+  return `https://fonts.googleapis.com/css2?family=${name}:wght@${weights}&display=swap`;
+}
+
+function googleFontsHref(family) {
+  const name = toGoogleFamily(family);
+  return `https://fonts.googleapis.com/css2?family=${name}&display=swap`;
+}
+
+function ensureFontLink(id, href) {
+  const el = document.getElementById(id);
+  if (el && el.tagName === "LINK") el.setAttribute("href", href);
+}
+
 function setTheme(config) {
-  const t = config.theme;
-  document.documentElement.style.setProperty("--primary", t.primary);
-  document.documentElement.style.setProperty("--secondary", t.secondary);
-  document.documentElement.style.setProperty("--bg", t.background);
-  document.documentElement.style.setProperty("--surface", t.surface);
-  document.documentElement.style.setProperty("--text", t.text);
-  document.documentElement.style.setProperty("--muted", t.muted);
-  document.body.style.fontFamily = `${t.fontBody}, system-ui, -apple-system, Segoe UI, Roboto, Arial`;
+  const t = config.theme || {};
+  const fonts = normalizeFonts(t);
+
+  document.documentElement.style.setProperty("--primary", t.primary || "#E89AA4");
+  document.documentElement.style.setProperty("--secondary", t.secondary || "#1F2A44");
+  document.documentElement.style.setProperty("--bg", t.background || "#0B0F1A");
+  document.documentElement.style.setProperty("--surface", t.surface || "#111827");
+  document.documentElement.style.setProperty("--text", t.text || "#F8FAFC");
+  document.documentElement.style.setProperty("--muted", t.muted || "#94A3B8");
+
+  document.documentElement.style.setProperty("--title-color", t.titleColor || t.secondary || "#1F2A44");
+  document.documentElement.style.setProperty("--date-color", t.dateColor || t.primary || "#E89AA4");
+
+  // vars de fontes
+  document.documentElement.style.setProperty("--font-title", `"${fonts.fontTitle}"`);
+  document.documentElement.style.setProperty("--font-body", `"${fonts.fontBody}"`);
+  document.documentElement.style.setProperty("--font-date", `"${fonts.fontDate}"`);
+
+  // links das fontes
+  ensureFontLink("fontTitle", googleFontsHrefWeights(fonts.fontTitle, "400;600;700"));
+  ensureFontLink("fontBody", googleFontsHrefWeights(fonts.fontBody, "300;400;600;700"));
+
+  // data/script sem wght
+  ensureFontLink("fontDate", googleFontsHref(fonts.fontDate));
+  ensureFontLink("fontScript", googleFontsHref(fonts.fontDate));
+
+  // body
+  document.body.style.fontFamily = `var(--font-body), system-ui, -apple-system, Segoe UI, Roboto, Arial`;
 }
 
 function setHeader(config) {
   const names = document.getElementById("coupleNames");
   const dateText = document.getElementById("dateText");
-  if (names) names.textContent = config.couple.names;
-  if (dateText) dateText.textContent = config.couple.dateText;
+
+  if (names) names.textContent = config.couple?.names || "";
+  if (dateText) dateText.textContent = config.couple?.dateText || "";
+
+  if (names) {
+    names.style.fontFamily = `var(--font-title), serif`;
+    names.style.color = `var(--title-color)`;
+  }
+  if (dateText) {
+    dateText.style.fontFamily = `var(--font-date), cursive`;
+    dateText.style.color = `var(--date-color)`;
+  }
 }
 
 // ---------- Stories ----------
@@ -85,13 +156,11 @@ function openModal(index) {
   const loader = document.getElementById("imgLoader");
 
   if (!modal || !img || !title || !counter || !downloadBtn) return;
-
   if (!flatPhotos.length) return;
-  currentIndex = ((index % flatPhotos.length) + flatPhotos.length) % flatPhotos.length;
 
+  currentIndex = ((index % flatPhotos.length) + flatPhotos.length) % flatPhotos.length;
   const item = flatPhotos[currentIndex];
 
-  // prepara loader + handlers ANTES de setar src
   img.onload = null;
   img.onerror = null;
 
@@ -108,12 +177,10 @@ function openModal(index) {
     if (loader) loader.textContent = "Falha ao carregar";
   };
 
-  // texto/links
   title.textContent = item.sectionTitle || "";
   counter.textContent = `${currentIndex + 1} / ${flatPhotos.length}`;
   downloadBtn.href = item.download || item.full || item.thumb;
 
-  // imagem
   img.src = item.full || item.thumb;
 
   modal.classList.remove("hidden");
@@ -208,16 +275,13 @@ function bindModalControls() {
   document.getElementById("navLeft")?.addEventListener("click", prevPhoto);
   document.getElementById("navRight")?.addEventListener("click", nextPhoto);
 
-  // Teclado (← → Esc)
   window.addEventListener("keydown", (e) => {
     if (!isModalOpen()) return;
-
     if (e.key === "Escape") closeModal();
     if (e.key === "ArrowLeft") prevPhoto();
     if (e.key === "ArrowRight") nextPhoto();
   });
 
-  // Swipe (mobile)
   const modalBody = document.querySelector(".modal-body");
   modalBody?.addEventListener("touchstart", (e) => {
     const t = e.touches[0];
@@ -239,7 +303,6 @@ function bindModalControls() {
     const dx = touchEndX - touchStartX;
     const dy = touchEndY - touchStartY;
 
-    // evita conflito com scroll vertical
     if (Math.abs(dx) < 40) return;
     if (Math.abs(dy) > Math.abs(dx)) return;
 
@@ -249,7 +312,6 @@ function bindModalControls() {
     touchStartX = touchStartY = touchEndX = touchEndY = 0;
   });
 
-  // Copiar link
   document.getElementById("copyBtn")?.addEventListener("click", async () => {
     const item = flatPhotos[currentIndex];
     const url = item?.download || item?.full || item?.thumb;
@@ -308,6 +370,6 @@ function bindModalControls() {
   }
 
   document.getElementById("faceFindBtn")?.addEventListener("click", () => {
-  window.location.href = "./find.html";
-});
+    window.location.href = "./find.html";
+  });
 })();
