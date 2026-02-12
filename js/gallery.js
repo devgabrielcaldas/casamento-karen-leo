@@ -1,5 +1,3 @@
-// gallery.js
-
 // ---------- Helpers ----------
 async function loadJson(path) {
   const res = await fetch(path, { cache: "no-store" });
@@ -7,9 +5,15 @@ async function loadJson(path) {
   return res.json();
 }
 
-async function loadConfig() { return loadJson("./data/config.json"); }
-async function loadStories() { return loadJson("./data/stories.json"); }
-async function loadGallery() { return loadJson("./data/gallery.json"); }
+async function loadConfig() {
+  return loadJson("./data/config.json");
+}
+async function loadStories() {
+  return loadJson("./data/stories.json");
+}
+async function loadGalleryIndex() {
+  return loadJson("./data/gallery.json");
+}
 
 // ---------- Theme/Header ----------
 function normalizeFonts(t) {
@@ -65,7 +69,7 @@ function setTheme(config) {
   document.documentElement.style.setProperty("--title-color", t.titleColor || t.secondary || "#1F2A44");
   document.documentElement.style.setProperty("--date-color", t.dateColor || t.primary || "#E89AA4");
 
-  // vars de fontes
+  // vars de fontes (usadas no CSS)
   document.documentElement.style.setProperty("--font-title", `"${fonts.fontTitle}"`);
   document.documentElement.style.setProperty("--font-body", `"${fonts.fontBody}"`);
   document.documentElement.style.setProperty("--font-date", `"${fonts.fontDate}"`);
@@ -74,11 +78,10 @@ function setTheme(config) {
   ensureFontLink("fontTitle", googleFontsHrefWeights(fonts.fontTitle, "400;600;700"));
   ensureFontLink("fontBody", googleFontsHrefWeights(fonts.fontBody, "300;400;600;700"));
 
-  // data/script sem wght
+  // fonte de data/script sem wght
   ensureFontLink("fontDate", googleFontsHref(fonts.fontDate));
-  ensureFontLink("fontScript", googleFontsHref(fonts.fontDate));
 
-  // body
+  // body font fallback
   document.body.style.fontFamily = `var(--font-body), system-ui, -apple-system, Segoe UI, Roboto, Arial`;
 }
 
@@ -122,24 +125,20 @@ function renderStories(stories) {
 }
 
 // ---------- Gallery + Modal State ----------
-let flatPhotos = [];
+const THUMBS_PER_SECTION = 24;
+
+// A modal navega SOMENTE dentro da seção clicada
+let modalList = [];
 let currentIndex = 0;
+
+// Cache para não refazer fetch da mesma seção
+const sectionCache = new Map(); // src -> items[]
 
 // swipe
 let touchStartX = 0;
 let touchStartY = 0;
 let touchEndX = 0;
 let touchEndY = 0;
-
-function buildFlatList(sections) {
-  const list = [];
-  sections.forEach((sec) => {
-    (sec.items || []).forEach((item) => {
-      list.push({ ...item, sectionTitle: sec.title });
-    });
-  });
-  return list;
-}
 
 // ---------- Modal ----------
 function isModalOpen() {
@@ -156,10 +155,10 @@ function openModal(index) {
   const loader = document.getElementById("imgLoader");
 
   if (!modal || !img || !title || !counter || !downloadBtn) return;
-  if (!flatPhotos.length) return;
+  if (!modalList.length) return;
 
-  currentIndex = ((index % flatPhotos.length) + flatPhotos.length) % flatPhotos.length;
-  const item = flatPhotos[currentIndex];
+  currentIndex = ((index % modalList.length) + modalList.length) % modalList.length;
+  const item = modalList[currentIndex];
 
   img.onload = null;
   img.onerror = null;
@@ -178,10 +177,10 @@ function openModal(index) {
   };
 
   title.textContent = item.sectionTitle || "";
-  counter.textContent = `${currentIndex + 1} / ${flatPhotos.length}`;
-  downloadBtn.href = item.download || item.full || item.thumb;
+  counter.textContent = `${currentIndex + 1} / ${modalList.length}`;
+  downloadBtn.href = item.download || item.full || item.thumb || item.src || "#";
 
-  img.src = item.full || item.thumb;
+  img.src = item.full || item.src || item.thumb;
 
   modal.classList.remove("hidden");
   modal.setAttribute("aria-hidden", "false");
@@ -207,29 +206,79 @@ function closeModal() {
 }
 
 function prevPhoto() {
-  if (!flatPhotos.length) return;
+  if (!modalList.length) return;
   openModal(currentIndex - 1);
 }
 
 function nextPhoto() {
-  if (!flatPhotos.length) return;
+  if (!modalList.length) return;
   openModal(currentIndex + 1);
 }
 
-// ---------- Render Sections ----------
-function renderSections(sections) {
+// ---------- Sections (Lazy Load) ----------
+async function loadSectionItems(src) {
+  if (!src) return [];
+  if (sectionCache.has(src)) return sectionCache.get(src);
+
+  const data = await loadJson(src);
+
+  // aceita formatos: { items: [...] } ou { photos: [...] }
+  const items = Array.isArray(data?.items)
+    ? data.items
+    : Array.isArray(data?.photos)
+      ? data.photos
+      : [];
+
+  sectionCache.set(src, items);
+  return items;
+}
+
+function renderThumbs(row, items, sectionTitle) {
+  if (!row) return;
+
+  row.innerHTML = "";
+
+  const slice = items.slice(0, THUMBS_PER_SECTION);
+
+  slice.forEach((item, idx) => {
+    const thumbUrl = item.thumb || item.src || item.full;
+    if (!thumbUrl) return;
+
+    const thumb = document.createElement("div");
+    thumb.className = "thumb";
+    thumb.innerHTML = `<img loading="lazy" src="${thumbUrl}" alt="Foto">`;
+
+    thumb.addEventListener("click", () => {
+      // quando clica, a modal usa a lista completa da seção
+      modalList = items.map((x) => ({ ...x, sectionTitle }));
+      openModal(idx);
+    });
+
+    row.appendChild(thumb);
+  });
+
+  // se não tiver nada, mostra aviso
+  if (!slice.length) {
+    row.innerHTML = `<div class="empty">Sem fotos nesta seção.</div>`;
+  }
+}
+
+function renderSections(sectionsIndex) {
   const wrapper = document.getElementById("sections");
   if (!wrapper) return;
 
   wrapper.innerHTML = "";
 
-  sections.forEach((section) => {
+  sectionsIndex.forEach((section) => {
     const rowId = `row-${section.id}`;
 
     const block = document.createElement("div");
     block.className = "section-row";
+    block.dataset.src = section.src || "";
+    block.dataset.title = section.title || "";
+
     block.innerHTML = `
-      <h3>${section.title}</h3>
+      <h3>${section.title || ""}</h3>
       <div class="row-wrap">
         <button class="row-arrow left" aria-label="Voltar">‹</button>
         <div class="carousel-row" id="${rowId}"></div>
@@ -243,19 +292,6 @@ function renderSections(sections) {
     const leftBtn = block.querySelector(".row-arrow.left");
     const rightBtn = block.querySelector(".row-arrow.right");
 
-    (section.items || []).forEach((item) => {
-      const thumb = document.createElement("div");
-      thumb.className = "thumb";
-      thumb.innerHTML = `<img loading="lazy" src="${item.thumb}" alt="Foto">`;
-
-      thumb.addEventListener("click", () => {
-        const idx = flatPhotos.findIndex((p) => p.id === item.id);
-        if (idx >= 0) openModal(idx);
-      });
-
-      row.appendChild(thumb);
-    });
-
     const scrollBy = () => Math.floor((row.clientWidth || 600) * 0.85);
 
     leftBtn?.addEventListener("click", () => {
@@ -265,7 +301,40 @@ function renderSections(sections) {
     rightBtn?.addEventListener("click", () => {
       row.scrollBy({ left: scrollBy(), behavior: "smooth" });
     });
+
+    // placeholder enquanto carrega
+    if (row) row.innerHTML = `<div class="empty">Carregando…</div>`;
   });
+}
+
+function observeSections() {
+  const blocks = document.querySelectorAll(".section-row[data-src]");
+
+  const io = new IntersectionObserver(
+    async (entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+
+        const block = entry.target;
+        const src = block.dataset.src;
+        const title = block.dataset.title || block.querySelector("h3")?.textContent || "";
+        const row = block.querySelector(".carousel-row");
+
+        try {
+          const items = await loadSectionItems(src);
+          renderThumbs(row, items, title);
+        } catch (e) {
+          console.error(e);
+          if (row) row.innerHTML = `<div class="empty">Erro ao carregar.</div>`;
+        }
+
+        io.unobserve(block);
+      }
+    },
+    { rootMargin: "250px" } // pré-carrega antes de aparecer
+  );
+
+  blocks.forEach((b) => io.observe(b));
 }
 
 // ---------- Bindings ----------
@@ -283,19 +352,27 @@ function bindModalControls() {
   });
 
   const modalBody = document.querySelector(".modal-body");
-  modalBody?.addEventListener("touchstart", (e) => {
-    const t = e.touches[0];
-    touchStartX = t.clientX;
-    touchStartY = t.clientY;
-    touchEndX = t.clientX;
-    touchEndY = t.clientY;
-  }, { passive: true });
+  modalBody?.addEventListener(
+    "touchstart",
+    (e) => {
+      const t = e.touches[0];
+      touchStartX = t.clientX;
+      touchStartY = t.clientY;
+      touchEndX = t.clientX;
+      touchEndY = t.clientY;
+    },
+    { passive: true }
+  );
 
-  modalBody?.addEventListener("touchmove", (e) => {
-    const t = e.touches[0];
-    touchEndX = t.clientX;
-    touchEndY = t.clientY;
-  }, { passive: true });
+  modalBody?.addEventListener(
+    "touchmove",
+    (e) => {
+      const t = e.touches[0];
+      touchEndX = t.clientX;
+      touchEndY = t.clientY;
+    },
+    { passive: true }
+  );
 
   modalBody?.addEventListener("touchend", () => {
     if (!isModalOpen()) return;
@@ -313,8 +390,8 @@ function bindModalControls() {
   });
 
   document.getElementById("copyBtn")?.addEventListener("click", async () => {
-    const item = flatPhotos[currentIndex];
-    const url = item?.download || item?.full || item?.thumb;
+    const item = modalList[currentIndex];
+    const url = item?.download || item?.full || item?.thumb || item?.src;
     if (!url) return;
 
     try {
@@ -349,20 +426,16 @@ function bindModalControls() {
     setTheme(config);
     setHeader(config);
 
-    const zipBtn = document.getElementById("zipBtn");
-    if (config.download?.zipUrl && zipBtn) {
-      zipBtn.href = config.download.zipUrl;
-      zipBtn.style.display = "inline-block";
-    }
-
+    // stories
     const storiesData = await loadStories();
     renderStories(storiesData?.stories);
 
-    const galleryData = await loadGallery();
-    const sections = galleryData?.sections || [];
+    // index de seções (leve)
+    const galleryIndex = await loadGalleryIndex();
+    const sectionsIndex = galleryIndex?.sections || [];
 
-    flatPhotos = buildFlatList(sections);
-    renderSections(sections);
+    renderSections(sectionsIndex);
+    observeSections();
 
     bindModalControls();
   } catch (err) {
